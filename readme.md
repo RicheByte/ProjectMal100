@@ -26,7 +26,7 @@ Think of your phone or computer like your house. You lock the front door, right?
 
 * **Think Before You Click:** Links in emails? Messages from strangers? Stop. Think. Is it real?
 
-* **Check App Permissions:** Does that game really need to know your location 24/7? Probably not.([Securelist][1])
+* **Check App Permissions:** Does that game really need to know your location 24/7? Probably not.
 
 * **Use Strong Passwords:** Don't be lazy here. Mix it up.
 
@@ -40,7 +40,7 @@ Think of your phone or computer like your house. You lock the front door, right?
 
 Technology is amazing. It connects us, builds things, makes life easier. That's the 'light of the world' part. Using it for good, for building cool stuff, for helping people – that's the goal.
 
-But like any powerful tool, it can be misused. Our job, if we want a better world, is to understand how it works, the good and the bad, and to use our knowledge to protect ourselves and help others understand too. Being aware is the first step to being safe.([Shayan Ahmed Khan][2])
+But like any powerful tool, it can be misused. Our job, if we want a better world, is to understand how it works, the good and the bad, and to use our knowledge to protect ourselves and help others understand too. Being aware is the first step to being safe.
 
 This repo is a small piece of that understanding. Use it to learn, to question, to become more aware. Share what you learn with others. Help shine a light on the dark corners of the internet.
 
@@ -77,7 +77,7 @@ By using this code, you agree to take full responsibility for how it is used.
 
 * Improve reverse engineering and malware analysis skills
 
-* Provide cybersecurity awareness and transparency through code([arxiv.org][3])
+* Provide cybersecurity awareness and transparency through code.
 
 ---
 
