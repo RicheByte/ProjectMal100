@@ -11,12 +11,17 @@
 
 ### 🚨 DISCLAIMER
 
-> This repository is created **strictly for educational, research, and awareness purposes only**.  
-> It is designed to help cybersecurity students, malware analysts, and ethical hackers understand how malware works — **so they can better defend against it**.
-> 
-> ❌ I do **NOT** support or promote the use of this code for malicious purposes.  
-> ✅ Use this content responsibly, within legal boundaries, and only in safe, isolated environments (e.g., virtual machines, sandboxes).  
-> 🛑 The author assumes **no liability** for misuse or damages caused by this repository.
+# ⚠️ Disclaimer
+
+This repository is intended for **educational and research purposes only**.
+
+It contains samples of malware and exploitation techniques to help students, analysts, and researchers understand how threats work at a low level.
+
+**Do not** run any of these samples on physical systems. Use **isolated virtual environments** only.  
+Misuse of this repository may be illegal and unethical.
+
+By using this code, you agree to take full responsibility for how it is used.
+
 
 ---
 
